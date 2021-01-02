@@ -1,0 +1,97 @@
+{
+  "name": "rd-saga-routines",
+  "version": "1.0.0",
+  "description": "Routines for redux-saga (typescript)",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
+  "files": [
+    "src",
+    "lib",
+    "cpp"
+  ],
+  "scripts": {
+    "typescript": "tsc --noEmit --pretty",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint:fix": "eslint . --fix --ext .ts,.tsx",
+    "prettier": "prettier --write src",
+    "prebuild": "yarn typescript && yarn lint && yarn prettier",
+    "build": "bob build",
+    "prepare": "yarn build"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nntriet/rd-saga-routines.git/rd-saga-routines.git",
+    "baseUrl": "https://github.com/nntriet/rd-saga-routines.git/rd-saga-routines"
+  },
+  "author": "NNT <nntriet@gmail.com> (https://github.com/nntriet)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nntriet/rd-saga-routines.git/rd-saga-routines/issues"
+  },
+  "homepage": "https://github.com/nntriet/rd-saga-routines.git/rd-saga-routines#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^11.0.0",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "@release-it/conventional-changelog": "^2.0.0",
+    "@types/jest": "^26.0.0",
+    "@types/react": "^16.9.19",
+    "@types/react-native": "^0.63.43",
+    "commitlint": "^11.0.0",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-typescript": "^12.0.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-config-react": "^1.1.7",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-react": "^7.22.0",
+    "husky": "^4.3.0",
+    "jest": "^26.0.1",
+    "pod-install": "^0.1.0",
+    "prettier": "^2.1.2",
+    "pretty-quick": "^3.1.0",
+    "react": "16.13.1",
+    "react-native": "0.63.4",
+    "react-native-builder-bob": "^0.17.1",
+    "redux": "^4.0.5",
+    "redux-saga": "^1.1.3",
+    "release-it": "^14.2.2",
+    "typescript": "^4.1.3"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "pretty-quick --staged && yarn prebuild"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  }
+}
