@@ -17,7 +17,7 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "lint:fix": "eslint . --fix --ext .ts,.tsx",
     "prettier": "prettier --write src",
-    "prebuild": "yarn typescript && yarn lint && yarn prettier",
+    "check": "yarn typescript && yarn lint && yarn prettier",
     "build": "bob build",
     "prepare": "yarn build"
   },
