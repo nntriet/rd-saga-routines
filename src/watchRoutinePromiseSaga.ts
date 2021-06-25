@@ -2,31 +2,50 @@ import { all, call, put, race, take, takeEvery } from 'redux-saga/effects';
 
 import { PromiseActionType, ROUTINE_PROMISE_ACTION } from './promisifyRoutine';
 
-function* handleRoutinePromiseFlow<Payload, Meta>(action: PromiseActionType<Payload, Meta>) {
+function* handleRoutinePromiseFlow<Payload, Meta>(action: PromiseActionType<Payload, Meta>, isSkipRequest?: boolean) {
   const {
-    payload,
+    payload: requestPayload,
     meta: {
       routine,
       defer: { resolve, reject },
     },
   } = action;
 
-  const [{ success, failure }] = yield all([
-    race({
-      success: take(routine.SUCCESS),
-      failure: take(routine.FAILURE),
-    }),
-    put(routine.request(payload)),
-  ]);
+  const [{ success, failure }, request]: [
+    { success: any; failure: any },
+    ReturnType<typeof routine.request> | undefined,
+  ] = yield all(
+    !isSkipRequest
+      ? [
+          race({
+            success: take(routine.SUCCESS),
+            failure: take(routine.FAILURE),
+          }),
+          put(routine.request(requestPayload)),
+        ]
+      : [
+          race({
+            success: take(routine.SUCCESS),
+            failure: take(routine.FAILURE),
+          }),
+        ],
+  );
 
   if (failure) {
-    const { payload } = failure;
+    const { payload, meta } = failure;
+    if (request && meta?.requestId !== (request.meta as { requestId: string })?.requestId) {
+      yield call(handleRoutinePromiseFlow as any, action, true);
+      return;
+    }
     yield call(reject, payload);
-    return;
   }
 
   if (success) {
     const { payload, meta } = success;
+    if (request && meta?.requestId !== (request.meta as { requestId: string })?.requestId) {
+      yield call(handleRoutinePromiseFlow as any, action, true);
+      return;
+    }
     yield call(resolve, {
       payload,
       meta,
@@ -35,5 +54,5 @@ function* handleRoutinePromiseFlow<Payload, Meta>(action: PromiseActionType<Payl
 }
 
 export default function* watchRoutinePromise() {
-  yield takeEvery(ROUTINE_PROMISE_ACTION, handleRoutinePromiseFlow);
+  yield takeEvery(ROUTINE_PROMISE_ACTION, handleRoutinePromiseFlow as any);
 }

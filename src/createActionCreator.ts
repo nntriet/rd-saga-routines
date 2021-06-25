@@ -1,5 +1,16 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createAction } from './createAction';
 import type { Action, P } from './types';
+
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    // eslint-disable-next-line no-bitwise
+    const r = (Math.random() * 16) | 0;
+    // eslint-disable-next-line no-bitwise
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 /**
  * Flux standard action creator factory
@@ -30,21 +41,24 @@ import type { Action, P } from './types';
 export function createActionCreator<
   TType extends string,
   // eslint-disable-next-line @typescript-eslint/naming-convention,
-  TCallable extends <_T>(...args: any[]) => Action<TType> | Promise<Action<TType>>
+  TCallable extends <_T>(...args: any[]) => Action<TType>
 >(
   type: TType,
   executor: (
     resolve: <Payload = undefined, Meta = undefined>(
       payload?: Payload,
-      meta?: P<Meta>,
-    ) => Action<TType, Payload, NonNullable<P<Meta>>>,
+      meta?: P<Meta> extends void ? { requestId?: string } | void : P<Meta> & { requestId?: string },
+    ) => Action<
+      TType,
+      Payload,
+      NonNullable<P<Meta> extends void ? { requestId?: string } | void : P<Meta> & { requestId?: string }>
+    >,
   ) => TCallable = (resolve) => ((() => resolve()) as unknown) as TCallable,
 ) {
   const callable = executor((payload, meta) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return createAction(type, payload!, meta!);
+    const requestId = (meta as { requestId: string })?.requestId || uuidv4();
+    return createAction(requestId, type, payload!, meta!);
   });
-
   return Object.assign(callable, {
     type,
     toString() {

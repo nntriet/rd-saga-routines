@@ -5,7 +5,7 @@ import type { P } from './types';
 
 export type PromiseActionType<Payload, Meta> = {
   type: string;
-  payload: P<Meta>;
+  payload: P<Meta> extends void ? { requestId?: string } | void : P<Meta> & { requestId?: string };
   meta: {
     defer: {
       resolve: (
@@ -35,8 +35,8 @@ export default function promisifyRoutine<Payload, Meta>(routine: Routine<Payload
       : Meta extends void
       ? { payload: Payload }
       : { payload: Payload; meta: Meta }
-  > =>
-    new Promise((resolve, reject) =>
+  > => {
+    return new Promise((resolve, reject) =>
       dispatch({
         type: ROUTINE_PROMISE_ACTION,
         payload,
@@ -46,4 +46,5 @@ export default function promisifyRoutine<Payload, Meta>(routine: Routine<Payload
         },
       } as PromiseActionType<Payload, Meta>),
     );
+  };
 }

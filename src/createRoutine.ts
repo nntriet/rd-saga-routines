@@ -18,15 +18,27 @@ import type { Action, P } from './types';
 export const createRoutine: RoutineCreator = <Payload = void, Params = void>(
   typePrefix: string,
 ): Routine<Payload, Params> => {
-  const request = createActionCreator(`${typePrefix}/REQUEST`, (resolve) => (params: P<Params>) =>
-    resolve(undefined, params),
+  const request = createActionCreator(
+    `${typePrefix}/REQUEST`,
+    (resolve) => (
+      params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
+    ) => resolve(undefined, params),
   );
-  const success = createActionCreator(`${typePrefix}/SUCCESS`, (resolve) => (payload: Payload, params: P<Params>) =>
-    resolve(payload, params),
+  const success = createActionCreator(
+    `${typePrefix}/SUCCESS`,
+    (resolve) => (
+      payload: Payload,
+      params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
+    ) => resolve(payload, params),
   );
-  const failure = createActionCreator(`${typePrefix}/FAILURE`, (resolve) => (error: Error, params: P<Params>) =>
-    resolve(error, params),
+  const failure = createActionCreator(
+    `${typePrefix}/FAILURE`,
+    (resolve) => (
+      error: Error,
+      params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
+    ) => resolve(error, params),
   );
+
   return {
     request,
     success,
@@ -40,11 +52,22 @@ export const createRoutine: RoutineCreator = <Payload = void, Params = void>(
 
 export const createPlainAction = <Params = void>(
   type: string,
-): ((params: P<Params>) => Action<string, undefined, NonNullable<P<Params>>>) & {
+): ((
+  params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
+) => Action<
+  string,
+  undefined,
+  NonNullable<P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }>
+>) & {
   type: string;
   toString(): string;
 } => {
-  const plainAction = createActionCreator(type, (resolve) => (params: P<Params>) => resolve(() => undefined, params));
+  const plainAction = createActionCreator(
+    type,
+    (resolve) => (
+      params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
+    ) => resolve(() => undefined, params),
+  );
   return plainAction;
 };
 
@@ -56,7 +79,13 @@ export interface Routine<Payload, Params> {
    * ```
    */
 
-  request: ((payload: P<Params>) => Action<string, undefined, NonNullable<P<Params>>>) & {
+  request: ((
+    payload: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
+  ) => Action<
+    string,
+    undefined,
+    NonNullable<P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }>
+  >) & {
     type: string;
     toString(): string;
   };
@@ -68,7 +97,14 @@ export interface Routine<Payload, Params> {
    * dispatch(fetchFoo.success(foo))
    * ```
    */
-  success: ((payload: Payload, params: P<Params>) => Action<string, Payload, NonNullable<P<Params>>>) & {
+  success: ((
+    payload: Payload,
+    params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
+  ) => Action<
+    string,
+    Payload,
+    NonNullable<P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }>
+  >) & {
     type: string;
     toString(): string;
   };
@@ -80,7 +116,14 @@ export interface Routine<Payload, Params> {
    * dispatch(fetchFoo.failure(error))
    * ```
    */
-  failure: ((error: Error, params: P<Params>) => Action<string, Error, NonNullable<P<Params>>>) & {
+  failure: ((
+    error: Error,
+    params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
+  ) => Action<
+    string,
+    Error,
+    NonNullable<P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }>
+  >) & {
     type: string;
     toString(): string;
   };
