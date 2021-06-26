@@ -33,7 +33,7 @@ function* handleRoutinePromiseFlow<Payload, Meta>(action: PromiseActionType<Payl
 
   if (failure) {
     const { payload, meta } = failure;
-    if (request && meta?.requestId !== (request.meta as { requestId: string })?.requestId) {
+    if (request && meta?.requestId && meta.requestId !== request.meta.requestId) {
       yield call(handleRoutinePromiseFlow as any, action, true);
       return;
     }
@@ -42,7 +42,7 @@ function* handleRoutinePromiseFlow<Payload, Meta>(action: PromiseActionType<Payl
 
   if (success) {
     const { payload, meta } = success;
-    if (request && meta?.requestId !== (request.meta as { requestId: string })?.requestId) {
+    if (request && meta?.requestId && meta.requestId !== request.meta.requestId) {
       yield call(handleRoutinePromiseFlow as any, action, true);
       return;
     }

@@ -57,7 +57,7 @@ export const createPlainAction = <Params = void>(
 ) => Action<
   string,
   undefined,
-  NonNullable<P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }>
+  P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }
 >) & {
   type: string;
   toString(): string;
@@ -84,7 +84,7 @@ export interface Routine<Payload, Params> {
   ) => Action<
     string,
     undefined,
-    NonNullable<P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }>
+    P<Params> extends void ? { requestId: string } : P<Params> & { requestId: string }
   >) & {
     type: string;
     toString(): string;
@@ -99,12 +99,8 @@ export interface Routine<Payload, Params> {
    */
   success: ((
     payload: Payload,
-    params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
-  ) => Action<
-    string,
-    Payload,
-    NonNullable<P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }>
-  >) & {
+    params: P<Params> extends void ? { requestId: string } : P<Params> & { requestId: string },
+  ) => Action<string, Payload, P<Params> extends void ? { requestId: string } : P<Params> & { requestId: string }>) & {
     type: string;
     toString(): string;
   };
@@ -118,12 +114,8 @@ export interface Routine<Payload, Params> {
    */
   failure: ((
     error: Error,
-    params: P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string },
-  ) => Action<
-    string,
-    Error,
-    NonNullable<P<Params> extends void ? { requestId?: string } | void : P<Params> & { requestId?: string }>
-  >) & {
+    params: P<Params> extends void ? { requestId: string } : P<Params> & { requestId: string },
+  ) => Action<string, Error, P<Params> extends void ? { requestId: string } : P<Params> & { requestId: string }>) & {
     type: string;
     toString(): string;
   };

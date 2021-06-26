@@ -8,7 +8,7 @@ import type { Action } from './types';
 export function createAction<TType extends string>(
   requestId: string,
   type: TType,
-): Action<TType, undefined, { requestId?: string }>;
+): Action<TType, undefined, { requestId: string }>;
 /**
  * Action with error factory
  * @example
@@ -18,7 +18,7 @@ export function createAction<TType extends string, TPayload extends Error>(
   requestId: string,
   type: TType,
   payload: TPayload,
-): Action<TType, TPayload, { requestId?: string }>;
+): Action<TType, TPayload, { requestId: string }>;
 /**
  * Action with non-error payload factory
  * @example
@@ -28,7 +28,7 @@ export function createAction<TType extends string, TPayload>(
   requestId: string,
   type: TType,
   payload: TPayload,
-): Action<TType, TPayload, { requestId?: string }>;
+): Action<TType, TPayload, { requestId: string }>;
 /**
  * Action with error and meta factory
  * @example
@@ -39,7 +39,7 @@ export function createAction<TType extends string, TPayload extends Error, TMeta
   type: TType,
   payload: TPayload,
   meta: TMeta,
-): Action<TType, TPayload, TMeta & { requestId?: string }>;
+): Action<TType, TPayload, Exclude<TMeta, void | { requestId?: string }> & { requestId: string }>;
 /**
  * Action with payload and meta factory
  * @example
@@ -50,7 +50,7 @@ export function createAction<TType extends string, TPayload, TMeta>(
   type: TType,
   payload: TPayload,
   meta: TMeta,
-): Action<TType, TPayload, TMeta & { requestId?: string }>;
+): Action<TType, TPayload, Exclude<TMeta, void | { requestId?: string }> & { requestId: string }>;
 
 /**
  * Flux standard action factory

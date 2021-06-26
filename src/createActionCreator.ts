@@ -48,15 +48,12 @@ export function createActionCreator<
     resolve: <Payload = undefined, Meta = undefined>(
       payload?: Payload,
       meta?: P<Meta> extends void ? { requestId?: string } | void : P<Meta> & { requestId?: string },
-    ) => Action<
-      TType,
-      Payload,
-      NonNullable<P<Meta> extends void ? { requestId?: string } | void : P<Meta> & { requestId?: string }>
-    >,
+    ) => Action<TType, Payload, P<Meta> extends void ? { requestId: string } : P<Meta> & { requestId: string }>,
   ) => TCallable = (resolve) => ((() => resolve()) as unknown) as TCallable,
 ) {
   const callable = executor((payload, meta) => {
-    const requestId = (meta as { requestId: string })?.requestId || uuidv4();
+    let requestId = meta?.requestId || '';
+    if (type.endsWith('/REQUEST')) requestId = uuidv4();
     return createAction(requestId, type, payload!, meta!);
   });
   return Object.assign(callable, {
