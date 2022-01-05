@@ -53,7 +53,7 @@ export function createActionCreator<
 ) {
   const callable = executor((payload, meta) => {
     let requestId = (meta as { requestId?: string })?.requestId || '';
-    if (type.endsWith('/REQUEST')) requestId = uuidv4();
+    if (!requestId && type.endsWith('/REQUEST')) requestId = uuidv4();
     return createAction(requestId, type, payload!, meta!);
   });
   return Object.assign(callable, {
