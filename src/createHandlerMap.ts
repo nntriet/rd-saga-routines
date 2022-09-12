@@ -1,8 +1,11 @@
-import type { AnyAction, ActionCreator, Handler } from './types';
+import type { AnyAction, ActionCreator, Handler, ImmerHandler } from './types';
 import { getType } from './getType';
 
 export type HandlerMap<TPrevState, TAction extends AnyAction, TNextState extends TPrevState = TPrevState> = {
   [type in TAction['type']]: Handler<TPrevState, TAction, TNextState>;
+};
+export type ImmerHandlerMap<TPrevState, TAction extends AnyAction> = {
+	[type in TAction['type']]: ImmerHandler<TPrevState, TAction>;
 };
 
 export type InferActionFromHandlerMap<THandlerMap extends HandlerMap<any, any>> = THandlerMap extends HandlerMap<

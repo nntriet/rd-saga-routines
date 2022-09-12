@@ -37,6 +37,7 @@ export type Handler<TPrevState, TAction, TNextState extends TPrevState = TPrevSt
   prevState: TPrevState,
   action: TAction,
 ) => TNextState;
+export type ImmerHandler<TPrevState, TAction> = (prevState: TPrevState, action: TAction) => void;
 
 export type Reducer<TPrevState, TAction, TNextState extends TPrevState = TPrevState> = (
   state: TPrevState | undefined,
