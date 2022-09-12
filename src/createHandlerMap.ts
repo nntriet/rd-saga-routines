@@ -31,6 +31,13 @@ export type CreateHandlerMap<TPrevState> = <
   actionCreators: TActionCreator | TActionCreator[],
   handler: Handler<TPrevState, TAction, TNextState>,
 ) => HandlerMap<TPrevState, TAction, TNextState>;
+export type CreateImmerHandlerMap<TPrevState> = <
+	TActionCreator extends ActionCreator<any>,
+	TAction extends AnyAction = TActionCreator extends (...args: any[]) => infer T ? T : never,
+>(
+	actionCreators: TActionCreator | TActionCreator[],
+	handler: ImmerHandler<TPrevState, TAction>,
+) => ImmerHandlerMap<TPrevState, TAction>;
 
 /**
  * Handler map factory
