@@ -14,6 +14,12 @@ export type InferActionFromHandlerMap<THandlerMap extends HandlerMap<any, any>> 
 >
   ? T
   : never;
+export type InferActionFromImmerHandlerMap<THandlerMap extends ImmerHandlerMap<any, any>> = THandlerMap extends ImmerHandlerMap<
+  any,
+  infer T
+>
+  ? T
+  : never;
 
 export type InferNextStateFromHandlerMap<THandlerMap extends HandlerMap<any, any>> = THandlerMap extends HandlerMap<
   any,
@@ -23,7 +29,7 @@ export type InferNextStateFromHandlerMap<THandlerMap extends HandlerMap<any, any
   ? T
   : never;
 
-export type InferNextStateFromImmerHandlerMap<THandlerMap extends HandlerMap<any, any>> = THandlerMap extends ImmerHandlerMap<
+export type InferNextStateFromImmerHandlerMap<THandlerMap extends ImmerHandlerMap<any, any>> = THandlerMap extends ImmerHandlerMap<
   infer T,
   any
 >
