@@ -7,6 +7,7 @@ import {
   ImmerHandlerMap,
   InferActionFromHandlerMap,
   InferNextStateFromHandlerMap,
+  InferNextStateFromImmerHandlerMap,
 } from './createHandlerMap';
 import type { AnyAction } from './types';
 
@@ -41,5 +42,5 @@ export function createImmerReducer<TPrevState, THandlerMap extends ImmerHandlerM
 	defaultState: TPrevState,
 	handlerMapsCreator: (handle: CreateImmerHandlerMap<TPrevState>) => THandlerMap[],
 ) {
-	return produce(createReducer(defaultState, handlerMapsCreator as any));
+	return produce(createReducer(defaultState, handlerMapsCreator as any)) as InferNextStateFromImmerHandlerMap<THandlerMap>;
 }

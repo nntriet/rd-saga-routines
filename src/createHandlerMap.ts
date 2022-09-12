@@ -23,6 +23,13 @@ export type InferNextStateFromHandlerMap<THandlerMap extends HandlerMap<any, any
   ? T
   : never;
 
+export type InferNextStateFromImmerHandlerMap<THandlerMap extends HandlerMap<any, any>> = THandlerMap extends ImmerHandlerMap<
+  infer T,
+  any
+>
+  ? T
+  : never;
+
 export type CreateHandlerMap<TPrevState> = <
   TActionCreator extends ActionCreator<any>,
   TNextState extends TPrevState,
