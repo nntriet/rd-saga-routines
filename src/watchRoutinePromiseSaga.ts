@@ -1,6 +1,6 @@
 import { all, call, put, race, take, takeEvery } from 'redux-saga/effects';
 
-import { ROUTINE_PROMISE_ACTION, type PromiseActionType } from './promisifyRoutine';
+import { ROUTINE_PROMISE_ACTION, PromiseActionType } from './promisifyRoutine';
 
 import type { Routine } from './createRoutine';
 
